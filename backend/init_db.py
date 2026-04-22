@@ -1,5 +1,7 @@
 import pymysql
 from dbutils.pooled_db import PooledDB
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from config import DB_HOST, DB_USER, DB_PASSWD, DB_NAME
 from datetime import datetime, timedelta
 import random

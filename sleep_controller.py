@@ -93,6 +93,16 @@ class MoodCorrelationResponse(BaseModel):
     correlation: float
     data: List[MoodCorrelation]
 
+class IntegratedTrend(BaseModel):
+    date: str
+    indoor_temp: float
+    outdoor_temp: float
+    indoor_hum: float
+    outdoor_hum: float
+    indoor_pm25: float
+    outdoor_pm25: float
+    mood_score: int
+
 # Helper functions for real analytics logic
 def calculate_sleep_stats(date_str, cursor=None):
     """
@@ -424,6 +434,59 @@ def get_external_data():
         sun=res.get('sun'),
         moon=res.get('moon')
     )
+
+@app.get("/api/integrated-environmental-trends", response_model=List[IntegratedTrend])
+def get_integrated_environmental_trends():
+    if not pool: return []
+    
+    with pool.connection() as conn, conn.cursor() as cs:
+        # 1. Get last 14 nights of sleep logs
+        cs.execute("""
+            SELECT date, bedtime, wake_time, mood_score 
+            FROM sleep_logs 
+            ORDER BY date DESC LIMIT 14
+        """)
+        nights = cs.fetchall()
+        
+        results = []
+        for d, start, end, mood in reversed(nights):
+            date_str = d.strftime("%Y-%m-%d")
+            
+            # Indoor Averages
+            cs.execute("""
+                SELECT AVG(temperature), AVG(humidity), AVG(pm2_5) 
+                FROM sensor_readings 
+                WHERE created_at BETWEEN %s AND %s
+            """, [start, end])
+            in_temp, in_hum, in_pm = cs.fetchone()
+            
+            # Outdoor Averages (matching the sleep window)
+            cs.execute("""
+                SELECT AVG(temperature), AVG(humidity) 
+                FROM weather_data 
+                WHERE ts BETWEEN %s AND %s
+            """, [start, end])
+            out_temp, out_hum = cs.fetchone()
+            
+            cs.execute("""
+                SELECT AVG(pm25) 
+                FROM aqi_data 
+                WHERE ts BETWEEN %s AND %s
+            """, [start, end])
+            out_pm = cs.fetchone()[0]
+            
+            results.append(IntegratedTrend(
+                date=d.strftime("%a"),
+                indoor_temp=round(float(in_temp or 0), 1),
+                outdoor_temp=round(float(out_temp or 0), 1),
+                indoor_hum=round(float(in_hum or 0), 1),
+                outdoor_hum=round(float(out_hum or 0), 1),
+                indoor_pm25=round(float(in_pm or 0), 1),
+                outdoor_pm25=round(float(out_pm or 0), 1),
+                mood_score=int(mood or 0)
+            ))
+            
+        return results
 
 if __name__ == "__main__":
     import uvicorn

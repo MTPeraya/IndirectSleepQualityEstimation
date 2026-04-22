@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Moon, Activity, Sun, BatteryCharging, ArrowRight } from "lucide-react";
+import { Moon, Activity, Sun, BatteryCharging, ArrowRight, Zap } from "lucide-react";
 
 export default function Home() {
   return (
@@ -16,10 +16,20 @@ export default function Home() {
       <div className="max-w-5xl mx-auto px-6 pt-20 flex flex-col items-center text-center">
         
         <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8 px-4 py-1.5 rounded-full bg-accent-purple/10 border border-accent-purple/20 flex items-center gap-2"
+        >
+          <Zap className="w-3.5 h-3.5 text-accent-cyan animate-pulse" />
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent-cyan">Integrated Intelligence v2.0</span>
+        </motion.div>
+
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
-          className="w-20 h-20 bg-accent-purple/20 rounded-3xl flex items-center justify-center mb-8 border border-accent-purple/30 shadow-[0_0_30px_rgba(139,92,246,0.3)]"
+          className="relative w-20 h-20 bg-accent-purple/20 rounded-3xl flex items-center justify-center mb-8 border border-accent-purple/30 shadow-[0_0_30px_rgba(139,92,246,0.3)]"
         >
           <Moon className="w-10 h-10 text-accent-purple" />
         </motion.div>

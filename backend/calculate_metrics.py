@@ -5,7 +5,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import LeaveOneOut
 import xgboost as xgb
-from backend.db_manager import get_db_pool
+from db_manager import get_db_pool
 
 pool = get_db_pool(max_connections=1)
 
