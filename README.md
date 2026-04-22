@@ -103,13 +103,13 @@ pip install -r requirements.txt
 
 ```bash
 # 1. Create all DB tables
-python3 init_db.py
+python3 backend/init_db.py
 
 # 2. Ingest your Google Form CSV export
-python3 ingest_logs.py
+python3 backend/ingest_logs.py
 
 # 3. Train ML models and save metrics (requires ≥4 nights with sensor data)
-python3 calculate_metrics.py
+python3 backend/calculate_metrics.py
 ```
 
 ### 4. Run the Backend API
