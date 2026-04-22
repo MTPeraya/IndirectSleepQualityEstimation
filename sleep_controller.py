@@ -1,6 +1,6 @@
-from db_manager import get_db_pool
+from backend.db_manager import get_db_pool
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-from external_services import sync_all_external_data
+from backend.external_services import sync_all_external_data
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime, timedelta

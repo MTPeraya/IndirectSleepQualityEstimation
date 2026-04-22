@@ -38,26 +38,50 @@ A data analytics web application estimating sleep quality using environmental di
 
 ```text
 .
-├── frontend/                    # Next.js App (Port 3000)
-│   ├── src/app/
-│   │   ├── dashboard/page.tsx   # Sleep overview + quality trend (all dates)
-│   │   ├── analysis/page.tsx    # Night-level sensor breakdown
-│   │   ├── mood/page.tsx        # Mood vs sleep correlation scatter
-│   │   ├── environment/page.tsx # PM2.5 & temperature vs sleep
-│   │   ├── models/page.tsx      # ML model benchmarks
-│   │   └── external/page.tsx   # Live weather / AQI / moon data
-│   └── tests/                   # Playwright E2E tests
+├── config_example.py            # Template for database configuration
+├── config.py                    # Database credentials (not committed)
+├── LICENSE                      # Project license
+├── mood_responses.csv           # Google Form CSV export (source of truth)
+├── README.md                    # This file
+├── requirements.txt             # Python dependencies
 ├── sleep_controller.py          # FastAPI backend (Port 8001)
-├── calculate_metrics.py         # ML training + feature importance (runs offline)
-├── ingest_logs.py               # CSV → MySQL ingestor (mood_responses.csv)
-├── init_db.py                   # Creates all DB tables
-├── external_services.py         # Async fetchers for weather/AQI/sun/moon
-├── generate_sample_sensors.py   # (Dev only) fills sensor data gaps from sleep_logs
-├── db_manager.py                # Shared PooledDB connection factory
-├── config.py                    # DB credentials (not committed)
-├── config_example.py            # Template for config.py
-├── requirements.txt             # All Python dependencies
-└── mood_responses.csv           # Google Form CSV export (source of truth)
+├── backend/                     # Backend Python modules
+│   ├── calculate_metrics.py     # ML training + feature importance (runs offline)
+│   ├── db_manager.py            # Shared PooledDB connection factory
+│   ├── external_services.py     # Async fetchers for weather/AQI/sun/moon
+│   ├── generate_sample_sensors.py # (Dev only) fills sensor data gaps from sleep_logs
+│   ├── ingest_logs.py           # CSV → MySQL ingestor (mood_responses.csv)
+│   └── init_db.py               # Creates all DB tables
+├── DataAnalytics/               # Data analysis notebooks
+│   └── sleep_analytics.ipynb    # Jupyter notebook for sleep data analysis
+├── DataCollection/              # Data collection scripts and schemas
+│   ├── DatabaseSchema.sql       # Database schema definition
+│   └── KidbrightSensor.py       # Sensor data collection script
+└── frontend/                    # Next.js App (Port 3000)
+    ├── eslint.config.mjs        # ESLint configuration
+    ├── next-env.d.ts            # Next.js TypeScript declarations
+    ├── next.config.ts           # Next.js configuration
+    ├── package.json             # Node.js dependencies and scripts
+    ├── playwright.config.ts     # Playwright test configuration
+    ├── postcss.config.mjs       # PostCSS configuration
+    ├── README.md                # Frontend-specific README
+    ├── tsconfig.json            # TypeScript configuration
+    ├── playwright-report/       # Playwright test reports
+    ├── public/                  # Static assets
+    ├── src/                     # Source code
+    │   ├── app/                 # Next.js app router pages
+    │   │   ├── dashboard/page.tsx # Sleep overview + quality trend (all dates)
+    │   │   ├── analysis/page.tsx  # Night-level sensor breakdown
+    │   │   ├── mood/page.tsx      # Mood vs sleep correlation scatter
+    │   │   ├── environment/page.tsx # PM2.5 & temperature vs sleep
+    │   │   ├── models/page.tsx     # ML model benchmarks
+    │   │   └── external/page.tsx   # Live weather / AQI / moon data
+    │   ├── components/          # React components
+    │   └── lib/                 # Utility libraries
+    ├── test-results/            # Test result outputs
+    └── tests/                   # Playwright E2E tests
+        ├── dashboard.spec.ts     # Dashboard page tests
+        └── navigation.spec.ts    # Navigation tests
 ```
 
 ---
@@ -154,4 +178,4 @@ Integrated data is stored across 10 tables on the Kasetsart University IoT host.
 
 ## License
 
-Developed for the DAQ module: *"Indirect Sleep Quality Estimation Using Environmental Disturbance Sensors."*
+Developed for the DAQ and DA module: *"Indirect Sleep Quality Estimation Using Environmental Disturbance Sensors."*

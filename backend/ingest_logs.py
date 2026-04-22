@@ -1,7 +1,7 @@
 import os
 import csv
 from datetime import datetime, timedelta
-from db_manager import get_db_pool
+from backend.db_manager import get_db_pool
 
 pool = get_db_pool(max_connections=1)
 
