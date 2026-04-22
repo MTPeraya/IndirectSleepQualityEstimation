@@ -28,7 +28,6 @@ import { motion } from "framer-motion";
 export default function EnvironmentImpact() {
   const [data, setData] = useState<any[]>([]);
   const [trends, setTrends] = useState<any[]>([]);
-  const [view, setView] = useState<"internal" | "integrated">("integrated");
 
   useEffect(() => {
     const fetchInternal = async () => {
@@ -64,24 +63,8 @@ export default function EnvironmentImpact() {
           <h1 className="text-4xl font-bold text-white mb-2">Environmental Impact</h1>
           <p className="text-slate-400">Discover how your bedroom environment tracks with the outside world.</p>
         </div>
-        
-        <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
-          <button 
-            onClick={() => setView("integrated")}
-            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${view === "integrated" ? "bg-accent-purple text-white shadow-lg" : "text-slate-400 hover:text-white"}`}
-          >
-            Integrated
-          </button>
-          <button 
-            onClick={() => setView("internal")}
-            className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${view === "internal" ? "bg-accent-purple text-white shadow-lg" : "text-slate-400 hover:text-white"}`}
-          >
-            Internal Only
-          </button>
-        </div>
       </header>
 
-      {view === "integrated" ? (
         <div className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Temp Comparison */}
@@ -153,17 +136,6 @@ export default function EnvironmentImpact() {
             </div>
           </GlassCard>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Original Internal view logic... */}
-          <GlassCard title="Internal Sensor Trends" subtitle="Raw data from your bedroom">
-             <div className="h-[350px] w-full flex items-center justify-center text-slate-500">
-               <LayoutGrid className="w-8 h-8 mr-3 opacity-20" />
-               View Integrated tab for detailed comparison.
-             </div>
-          </GlassCard>
-        </div>
-      )}
     </div>
   );
 }
