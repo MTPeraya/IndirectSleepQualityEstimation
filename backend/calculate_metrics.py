@@ -4,7 +4,11 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import LeaveOneOut
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 import xgboost as xgb
+import shap
+import matplotlib.pyplot as plt
 from db_manager import get_db_pool
 
 pool = get_db_pool(max_connections=1)
@@ -62,6 +66,7 @@ def get_training_data():
                 'ext_pm25':          float(day_aqi['ext_pm25'].mean())         if not day_aqi.empty else 0.0,
                 'moon_illumination': float(day_moon['moon_illum'].max())       if not day_moon.empty else 0.0,
 
+                'comfort_index':     abs((float(day_sensors['temperature'].mean()) if not day_sensors.empty else 0.0) - 20),
                 'target':            int(log['mood_score'])
             }
             # Clean up potential NaNs from the dictionary (e.g. if mean() was called on all-NaN column)
@@ -89,11 +94,11 @@ def train_and_save():
     loo = LeaveOneOut()
 
     models = {
-        'KNN':           KNeighborsRegressor(n_neighbors=min(3, len(X) - 1)),
-        'Decision Tree': DecisionTreeRegressor(max_depth=3, random_state=42),
-        'XGBoost':       xgb.XGBRegressor(objective='reg:squarederror', n_estimators=50,
+        'KNN':           Pipeline([('scaler', StandardScaler()), ('model', KNeighborsRegressor(n_neighbors=min(3, len(X) - 1)))]),
+        'Decision Tree': Pipeline([('scaler', StandardScaler()), ('model', DecisionTreeRegressor(max_depth=3, random_state=42))]),
+        'XGBoost':       Pipeline([('scaler', StandardScaler()), ('model', xgb.XGBRegressor(objective='reg:squarederror', n_estimators=50,
                                            max_depth=3, learning_rate=0.1, random_state=42,
-                                           verbosity=0),
+                                           verbosity=0))]),
     }
 
     results = []
@@ -110,10 +115,41 @@ def train_and_save():
         rmse = np.sqrt(mean_squared_error(y_true, y_pred))
         results.append((model_name, mae, rmse))
         print(f"  {model_name}: MAE={mae:.4f}  RMSE={rmse:.4f}")
+        
+        if model_name == 'XGBoost':
+            xgb_y_true, xgb_y_pred = y_true, y_pred
 
-    # Fit XGBoost on all data for feature importance
+    # Fit XGBoost on all data for feature importance and SHAP
     xgb_model = models['XGBoost']
     xgb_model.fit(X, y)
+
+    # SHAP Plot
+    try:
+        X_scaled = xgb_model.named_steps['scaler'].transform(X)
+        explainer = shap.TreeExplainer(xgb_model.named_steps['model'])
+        shap_values = explainer(X_scaled)
+        plt.figure(figsize=(10, 6))
+        shap.summary_plot(shap_values, X_scaled, feature_names=X.columns, show=False)
+        plt.savefig("shap_summary_plot.png", bbox_inches='tight', dpi=300)
+        plt.close()
+        print("Saved SHAP summary plot to shap_summary_plot.png")
+    except Exception as e:
+        print("Error generating SHAP plot:", e)
+
+    # Residuals Plot
+    try:
+        residuals = np.array(xgb_y_true) - np.array(xgb_y_pred)
+        plt.figure(figsize=(10, 5))
+        plt.bar(range(len(residuals)), residuals, color='#3b82f6')
+        plt.axhline(0, ls='--', color='red', alpha=0.7)
+        plt.title('XGBoost Residuals (Actual - Predicted) per Night')
+        plt.xlabel('Night Index (from LOO-CV)')
+        plt.ylabel('Error (Mood Score)')
+        plt.savefig("residual_plot.png", bbox_inches='tight', dpi=300)
+        plt.close()
+        print("Saved Residual Analysis plot to residual_plot.png")
+    except Exception as e:
+        print("Error generating Residuals plot:", e)
 
     # Save Metrics using a transaction
     with pool.connection() as conn:
@@ -128,7 +164,7 @@ def train_and_save():
 
             # Save Feature Importance
             cs.execute("DELETE FROM feature_importance")
-            importance = xgb_model.feature_importances_
+            importance = xgb_model.named_steps['model'].feature_importances_
             
             # Check if all importance is zero
             if sum(importance) == 0:
@@ -150,6 +186,7 @@ def train_and_save():
                 'ext_aqi':           'Ext AQI',
                 'ext_pm25':          'Ext PM2.5',
                 'moon_illumination': 'Moon Illum',
+                'comfort_index':     'Comfort Index',
             }
 
             for col, score in zip(X.columns, importance):

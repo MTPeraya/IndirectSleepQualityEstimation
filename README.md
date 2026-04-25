@@ -14,11 +14,16 @@ A data analytics web application estimating sleep quality using **KidBright IoT*
 - **Google Forms Integration**: Automated ingestion of Bedtime, Wake Time, and 1–5 Mood Score logs via CSV export.
 - **Disturbance Tracking**: 5-minute interval breakdown of noise peaks, vibration spikes, and ambient light.
 - **Mood Correlation**: Scatter plot of sleep quality vs. morning mood score (1–5 scale).
-- **ML Model Benchmarking**: 3 models evaluated with **Leave-One-Out CV** on real data — KNN, Decision Tree, XGBoost.
+- **ML Model Benchmarking & Pipeline Integration**: Predicts mood using three models (KNN, Decision Tree, XGBoost) using robust Scikit-Learn `Pipeline` standard scaling inside Leave-One-Out validation.
+- **SHAP Summary Plot**: A natively generated explainability plot breaking down precisely which internal/external factors most pushed mood scores up or down.
+- **Residual Analysis**: Evaluates prediction error (actual − predicted) per night in validation, verifying our XGBoost model is unbiased.
+- **ML Model Benchmarking**: 3 models evaluated with **Leave-One-Out CV** on real data — KNN, Decision Tree, XGBoost. (See `results.md` for actual result numbers)
 - **Feature Importance**: XGBoost gain-based analysis showing which factors (internal sensors + external context) most impact your specific sleep results. Purple = internal, cyan = external.
 - **Integrated Environmental Intelligence**: Indoor vs outdoor comparisons — temporal alignment between your bedroom sensors and global weather/AQI data.
 - **External Data**: Hourly weather, AQI, sunrise/sunset, and moon phase via external APIs.
 - **Premium UI**: Glassmorphism dark-theme dashboard in Next.js with Recharts and Framer Motion.
+
+![Dashboard Preview](./dashboard_preview.png)
 
 ---
 
@@ -39,7 +44,7 @@ A data analytics web application estimating sleep quality using **KidBright IoT*
 
 ```text
 .
-├── config_example.py            # Template for database configuration
+├── config.example.py            # Template for database configuration
 ├── config.py                    # Database credentials (not committed)
 ├── LICENSE                      # Project license
 ├── mood_responses.csv           # Google Form CSV export (source of truth)
@@ -91,7 +96,7 @@ A data analytics web application estimating sleep quality using **KidBright IoT*
 ### 1. Prerequisites
 - Python 3.9+
 - Node.js 18+
-- MySQL credentials (copy `config_example.py` → `config.py`)
+- MySQL credentials (copy `config.example.py` → `config.py`)
 
 ### 2. Python Setup
 
@@ -154,7 +159,11 @@ Models are evaluated using **Leave-One-Out cross-validation** (appropriate for t
 
 **Features used** (15+ columns): Internal sensor averages (temperature, humidity, light, PM1.0, PM2.5, PM10, noise, vibration, sound peak), sleep duration, external weather (outdoor temp, outdoor humidity, wind speed), external AQI (city-wide AQI, outdoor PM2.5), moon illumination, and 4 engineered features (temp insulation delta, log-light, moon phase numeric, disturbance index).
 
-Re-run `calculate_metrics.py` any time new log entries are added to update metrics.
+Re-run `calculate_metrics.py` any time new log entries are added to update metrics. This script will automatically generate a fresh `shap_summary_plot.png`.
+
+![SHAP Feature Summary](./shap_summary_plot.png)
+
+![Residual Plot](./residual_plot.png)
 
 ---
 
