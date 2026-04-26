@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="12.0.002">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="12.0.002" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="retrieve" compatibility="12.0.002" expanded="true" height="68" name="Retrieve IndirectSleepEstimation" width="90" x="45" y="34">
+        <parameter key="repository_entry" value="/Connections/IndirectSleepEstimation"/>
+      </operator>
+      <operator activated="true" class="multiply" compatibility="12.0.002" expanded="true" height="208" name="Multiply" width="90" x="179" y="34"/>
+      <operator activated="true" class="jdbc_connectors:read_database" compatibility="12.0.002" expanded="true" height="82" name="sun_data" width="90" x="380" y="646">
+        <parameter key="define_connection" value="repository"/>
+        <parameter key="database_system" value="MySQL"/>
+        <parameter key="define_query" value="table name"/>
+        <parameter key="query" value="SELECT *&#10;FROM `disturbance_data`"/>
+        <parameter key="use_default_schema" value="true"/>
+        <parameter key="table_name" value="aqi_data"/>
+        <parameter key="prepare_statement" value="false"/>
+        <enumeration key="parameters"/>
+        <parameter key="data_management" value="auto"/>
+      </operator>
+      <operator activated="true" class="model_simulator:data_statistics" compatibility="11.1.003" expanded="true" height="82" name="Statistics (7)" width="90" x="581" y="646"/>
+      <operator activated="true" class="jdbc_connectors:read_database" compatibility="12.0.002" expanded="true" height="82" name="moon_data" width="90" x="380" y="544">
+        <parameter key="define_connection" value="repository"/>
+        <parameter key="database_system" value="MySQL"/>
+        <parameter key="define_query" value="table name"/>
+        <parameter key="query" value="SELECT *&#10;FROM `disturbance_data`"/>
+        <parameter key="use_default_schema" value="true"/>
+        <parameter key="table_name" value="moon_data"/>
+        <parameter key="prepare_statement" value="false"/>
+        <enumeration key="parameters"/>
+        <parameter key="data_management" value="auto"/>
+      </operator>
+      <operator activated="true" class="model_simulator:data_statistics" compatibility="11.1.003" expanded="true" height="82" name="Statistics (6)" width="90" x="581" y="544"/>
+      <operator activated="true" class="jdbc_connectors:read_database" compatibility="12.0.002" expanded="true" height="82" name="aqi_data" width="90" x="380" y="442">
+        <parameter key="define_connection" value="repository"/>
+        <parameter key="database_system" value="MySQL"/>
+        <parameter key="define_query" value="table name"/>
+        <parameter key="query" value="SELECT *&#10;FROM `disturbance_data`"/>
+        <parameter key="use_default_schema" value="true"/>
+        <parameter key="table_name" value="aqi_data"/>
+        <parameter key="prepare_statement" value="false"/>
+        <enumeration key="parameters"/>
+        <parameter key="data_management" value="auto"/>
+      </operator>
+      <operator activated="true" class="model_simulator:data_statistics" compatibility="11.1.003" expanded="true" height="82" name="Statistics (5)" width="90" x="581" y="442"/>
+      <operator activated="true" class="jdbc_connectors:read_database" compatibility="12.0.002" expanded="true" height="82" name="weather_data" width="90" x="380" y="340">
+        <parameter key="define_connection" value="repository"/>
+        <parameter key="database_system" value="MySQL"/>
+        <parameter key="define_query" value="table name"/>
+        <parameter key="query" value="SELECT *&#10;FROM `disturbance_data`"/>
+        <parameter key="use_default_schema" value="true"/>
+        <parameter key="table_name" value="weather_data"/>
+        <parameter key="prepare_statement" value="false"/>
+        <enumeration key="parameters"/>
+        <parameter key="data_management" value="auto"/>
+      </operator>
+      <operator activated="true" class="model_simulator:data_statistics" compatibility="11.1.003" expanded="true" height="82" name="Statistics (4)" width="90" x="581" y="340"/>
+      <operator activated="true" class="jdbc_connectors:read_database" compatibility="12.0.002" expanded="true" height="82" name="sleep_logs" width="90" x="380" y="238">
+        <parameter key="define_connection" value="repository"/>
+        <parameter key="database_system" value="MySQL"/>
+        <parameter key="define_query" value="table name"/>
+        <parameter key="query" value="SELECT *&#10;FROM `disturbance_data`"/>
+        <parameter key="use_default_schema" value="true"/>
+        <parameter key="table_name" value="sleep_logs"/>
+        <parameter key="prepare_statement" value="false"/>
+        <enumeration key="parameters"/>
+        <parameter key="data_management" value="auto"/>
+      </operator>
+      <operator activated="true" class="model_simulator:data_statistics" compatibility="11.1.003" expanded="true" height="82" name="Statistics (3)" width="90" x="581" y="238"/>
+      <operator activated="true" class="jdbc_connectors:read_database" compatibility="12.0.002" expanded="true" height="82" name="sensor_reading" width="90" x="380" y="136">
+        <parameter key="define_connection" value="repository"/>
+        <parameter key="database_system" value="MySQL"/>
+        <parameter key="define_query" value="table name"/>
+        <parameter key="query" value="SELECT *&#10;FROM `disturbance_data`"/>
+        <parameter key="use_default_schema" value="true"/>
+        <parameter key="table_name" value="sensor_readings"/>
+        <parameter key="prepare_statement" value="false"/>
+        <enumeration key="parameters"/>
+        <parameter key="data_management" value="auto"/>
+      </operator>
+      <operator activated="true" class="model_simulator:data_statistics" compatibility="11.1.003" expanded="true" height="82" name="Statistics (2)" width="90" x="581" y="136"/>
+      <operator activated="true" class="jdbc_connectors:read_database" compatibility="12.0.002" expanded="true" height="82" name="disturbance_data" width="90" x="380" y="34">
+        <parameter key="define_connection" value="repository"/>
+        <parameter key="database_system" value="MySQL"/>
+        <parameter key="define_query" value="table name"/>
+        <parameter key="query" value="SELECT *&#10;FROM `disturbance_data`"/>
+        <parameter key="use_default_schema" value="true"/>
+        <parameter key="table_name" value="disturbance_data"/>
+        <parameter key="prepare_statement" value="false"/>
+        <enumeration key="parameters"/>
+        <parameter key="data_management" value="auto"/>
+      </operator>
+      <operator activated="true" class="model_simulator:data_statistics" compatibility="11.1.003" expanded="true" height="82" name="Statistics" width="90" x="581" y="34"/>
+      <connect from_op="Retrieve IndirectSleepEstimation" from_port="output" to_op="Multiply" to_port="input"/>
+      <connect from_op="Multiply" from_port="output 1" to_op="disturbance_data" to_port="connection"/>
+      <connect from_op="Multiply" from_port="output 2" to_op="sensor_reading" to_port="connection"/>
+      <connect from_op="Multiply" from_port="output 3" to_op="sleep_logs" to_port="connection"/>
+      <connect from_op="Multiply" from_port="output 4" to_op="weather_data" to_port="connection"/>
+      <connect from_op="Multiply" from_port="output 5" to_op="aqi_data" to_port="connection"/>
+      <connect from_op="Multiply" from_port="output 6" to_op="moon_data" to_port="connection"/>
+      <connect from_op="Multiply" from_port="output 7" to_op="sun_data" to_port="connection"/>
+      <connect from_op="sun_data" from_port="output" to_op="Statistics (7)" to_port="example set"/>
+      <connect from_op="Statistics (7)" from_port="statistics" to_port="result 7"/>
+      <connect from_op="moon_data" from_port="output" to_op="Statistics (6)" to_port="example set"/>
+      <connect from_op="Statistics (6)" from_port="statistics" to_port="result 6"/>
+      <connect from_op="aqi_data" from_port="output" to_op="Statistics (5)" to_port="example set"/>
+      <connect from_op="Statistics (5)" from_port="statistics" to_port="result 5"/>
+      <connect from_op="weather_data" from_port="output" to_op="Statistics (4)" to_port="example set"/>
+      <connect from_op="Statistics (4)" from_port="statistics" to_port="result 4"/>
+      <connect from_op="sleep_logs" from_port="output" to_op="Statistics (3)" to_port="example set"/>
+      <connect from_op="Statistics (3)" from_port="statistics" to_port="result 3"/>
+      <connect from_op="sensor_reading" from_port="output" to_op="Statistics (2)" to_port="example set"/>
+      <connect from_op="Statistics (2)" from_port="statistics" to_port="result 2"/>
+      <connect from_op="disturbance_data" from_port="output" to_op="Statistics" to_port="example set"/>
+      <connect from_op="Statistics" from_port="statistics" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <portSpacing port="sink_result 3" spacing="0"/>
+      <portSpacing port="sink_result 4" spacing="0"/>
+      <portSpacing port="sink_result 5" spacing="0"/>
+      <portSpacing port="sink_result 6" spacing="0"/>
+      <portSpacing port="sink_result 7" spacing="0"/>
+      <portSpacing port="sink_result 8" spacing="0"/>
+    </process>
+  </operator>
+</process>
